@@ -1,25 +1,27 @@
 import pygame
 import os
 import objects
-import fileHandler
+import fileHandler as fileHandler
 import numpy as np
 
 # Variables
 WIDTH = 1280
 HEIGHT = 720
-FPS = 60
+FPS = 144
+
+OBSTACLE_PATH = "docs/obstacles"
 
 # Colors
-BACKGROUND = (255,255,255) # White
-ROBOT = (0, 0, 0) # Black
-OBSTACLE = (0, 0, 255) # Blue
+BACKGROUND_COLOR = (255,255,255) # White
+ROBOT_COLOR = (0, 0, 0) # Black
+OBSTACLE_COLOR = (0, 0, 255) # Blue
 
 
 # Planner initialize 
 pygame.init()
 pygame.display.set_caption("Motion Planner")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-screen.fill(BACKGROUND)
+screen.fill(BACKGROUND_COLOR)
 clock = pygame.time.Clock()
 running = True
 
@@ -27,10 +29,10 @@ all_sprites = pygame.sprite.Group()
 obstacles = pygame.sprite.Group()
 
 obstacles_list = fileHandler.fileIn()
-obstacles_list.getObstacle(os.path.join("obstacle.dat"))
+obstacles_list.getObstacle(os.path.abspath(os.path.join(OBSTACLE_PATH, "obstacle2.dat")), WIDTH, HEIGHT)
 
 for i in range(len(obstacles_list.verticess)):
-    obstacle = objects.Obstacle( (128, 128), (obstacles_list.init_configs[i][0], obstacles_list.init_configs[i][1]+200), OBSTACLE, obstacles_list.verticess[i])
+    obstacle = objects.Obstacle( (WIDTH, HEIGHT), (WIDTH/2, HEIGHT/2), OBSTACLE_COLOR, obstacles_list.verticess[i])
     all_sprites.add(obstacle)
     
 #robot = objects.Robot((50, 50), (100, 100), ROBOT, [[40.2,40.2], [20,40], [10, 10]])
@@ -50,7 +52,7 @@ while running:
 
     # Draw on screen
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(BACKGROUND)
+    screen.fill(BACKGROUND_COLOR)
     all_sprites.draw(screen)
     pygame.display.update()
 
