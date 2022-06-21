@@ -25,5 +25,13 @@ class Obstacle(pygame.sprite.Sprite):
         pygame.draw.polygon(self.image, color, vertices)
 
     def update(self):
-        self.rect.x += 1 
-        self.rect.y += 1
+        key_pressed = pygame.key.get_pressed()
+        if key_pressed[pygame.K_RIGHT]:
+            self.rect.x += 2
+        if key_pressed[pygame.K_LEFT]:
+            self.rect.x -= 2
+        if key_pressed[pygame.K_UP]:
+            self.rect.y -= 2
+        if key_pressed[pygame.K_DOWN]:
+            self.rect.y += 2      
+    

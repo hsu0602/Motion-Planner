@@ -1,11 +1,12 @@
 import pygame
+import os
 import objects
-import fileInputHandler
+import fileHandler
 import numpy as np
 
 # Variables
-WIDTH = 900
-HEIGHT = 500
+WIDTH = 1280
+HEIGHT = 720
 FPS = 60
 
 # Colors
@@ -25,10 +26,15 @@ running = True
 all_sprites = pygame.sprite.Group()
 obstacles = pygame.sprite.Group()
 
+obstacles_list = fileHandler.fileIn()
+obstacles_list.getObstacle(os.path.join("obstacle.dat"))
 
-
-robot = objects.Robot((50, 50), (100, 100), ROBOT, [[40.2,40.2], [20,40], [10, 10]])
-all_sprites.add(robot)
+for i in range(len(obstacles_list.verticess)):
+    obstacle = objects.Obstacle( (128, 128), (obstacles_list.init_configs[i][0], obstacles_list.init_configs[i][1]+200), OBSTACLE, obstacles_list.verticess[i])
+    all_sprites.add(obstacle)
+    
+#robot = objects.Robot((50, 50), (100, 100), ROBOT, [[40.2,40.2], [20,40], [10, 10]])
+#all_sprites.add(robot)
 
 # Animation loop
 while running:
