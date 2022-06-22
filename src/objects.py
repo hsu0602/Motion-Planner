@@ -1,4 +1,5 @@
 import pygame
+import copy
 from transform import AffineTransform
 
 class Obstacle(pygame.sprite.Sprite):
@@ -25,6 +26,11 @@ class Robot(pygame.sprite.Sprite):
         self.image = pygame.Surface(size, pygame.SRCALPHA, 32)
         self.rect = self.image.get_rect()
         self.rect.center = pos
+        self.vertices = copy.deepcopy(vertices)
+        self.size = size
+        self.width = width
+        self.height = height
+        self.color = color
 
         x = config[0]
         y = config[1]
@@ -33,8 +39,11 @@ class Robot(pygame.sprite.Sprite):
         for i in range(len(vertices)) :
             pygame.draw.polygon(self.image, color, AffineTransform(vertices[i], (4.0,4.0), theta, (False, True), (4*x + width/12, -4*y + height - height/12)))
 
-    def update(self):
-        return 0 # todo
+    def update(self, x, y, theta):
+        tmp = copy.deepcopy(self.vertices)
+        self.image = pygame.Surface(self.size, pygame.SRCALPHA, 32)
+        for i in range(len(tmp)) :
+            pygame.draw.polygon(self.image, self.color, AffineTransform(tmp[i], (4.0,4.0), theta, (False, True), (4*x + self.width/12, -4*y + self.height - self.height/12)))
 
 
 class Button(pygame.sprite.Sprite):

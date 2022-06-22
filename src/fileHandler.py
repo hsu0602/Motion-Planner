@@ -10,7 +10,7 @@ class fileIn:
     def getObstacle(self, file):
         with open(file, 'r') as f:
             lines = f.readlines()
-        f.close()
+        
         
         filtered_lines = []
         
@@ -50,7 +50,6 @@ class fileIn:
     def getRobot(self, file):
         with open(file, 'r') as f:
             lines = f.readlines()
-        f.close()
         
         filtered_lines = []
         
