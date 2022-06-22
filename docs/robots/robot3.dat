@@ -1,25 +1,30 @@
 # number of robots
 1
 # robot #0
-# number of convex parts
-1
-# part #1
-# number of vertices
-6
-# vertices
-15.5 0 
-10.5 3.5 
--10.5 3.5 
--11.5 0 
--10.5 -3.5 
-10.5 -3.5
-# initial configuraion
-90.0 10.0 180.0
-# goal configuration 
-105.0 97.0 0.0
-# number of control points
+# number of polygons
 2
+# polygon #0
+# number of vertices
+4
+# vertices
+-1.000000 1.000000
+-1.000000 -5.000000
+1.000000 -5.000000
+1.000000 1.000000
+# polygon #1
+# number of vertices
+3
+# vertices
+0.000000 5.000000
+-5.000000 1.000000
+5.000000 1.000000
+# initial configuration
+11.000000 115.000000 90.000000
+# goal configuration
+110.000000 115.000000 0.000000
+# number of control points
+2 
 # control point #1
-15 0
-# control point #2
-2 0
+0.000000 4.000000
+# control point #1
+0.000000 -4.000000

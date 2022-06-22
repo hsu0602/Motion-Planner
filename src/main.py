@@ -1,42 +1,115 @@
 import pygame
 import os
 import objects
-import fileHandler as fileHandler
-import numpy as np
+import fileHandler
+import copy
 
 # Variables
 WIDTH = 1280
 HEIGHT = 720
-FPS = 144
+FPS = 240
 
-OBSTACLE_PATH = "docs/obstacles"
+# Paths
+def OBSTACLE_PATH(x) : return os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "docs", "obstacles", "obstacle"+ str(x) +".dat")
+def ROBOT_PATH(x) : return os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "docs", "robots", "robot"+ str(x) +".dat")
+THEME_PATH = os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "pics", "themes", "background1.png")
+ICON_PATH = os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "pics", "MotionPlanner.ico")
+BUTTON_PATH = os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "pics", "buttons","")
 
 # Colors
 BACKGROUND_COLOR = (255,255,255) # White
-ROBOT_COLOR = (0, 0, 0) # Black
 OBSTACLE_COLOR = (0, 0, 255) # Blue
-
+ROBOT_INIT_COLOR = (0, 0, 0) # Black
+ROBOT_GOAL_COLOR = (0, 255, 0) # Green
 
 # Planner initialize 
 pygame.init()
 pygame.display.set_caption("Motion Planner")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 screen.fill(BACKGROUND_COLOR)
 clock = pygame.time.Clock()
 running = True
 
+# Load pictures
+THEME_IMG = pygame.image.load(THEME_PATH).convert()
+ICON_IMG = pygame.image.load(ICON_PATH).convert()
+SET0_IMG = pygame.image.load(BUTTON_PATH + "set0.png").convert()
+SET1_IMG = pygame.image.load(BUTTON_PATH + "set1.png").convert()
+SET2_IMG = pygame.image.load(BUTTON_PATH + "set2.png").convert()
+SET3_IMG = pygame.image.load(BUTTON_PATH + "set3.png").convert()
+SET4_IMG = pygame.image.load(BUTTON_PATH + "set4.png").convert()
+INIT_IMG = pygame.image.load(BUTTON_PATH + "init.png").convert()
+PLAN_IMG = pygame.image.load(BUTTON_PATH + "plan.png").convert()
+
+pygame.display.set_icon(ICON_IMG)
+
+# Load items
 all_sprites = pygame.sprite.Group()
 obstacles = pygame.sprite.Group()
+robots = pygame.sprite.Group()
 
-obstacles_list = fileHandler.fileIn()
-obstacles_list.getObstacle(os.path.abspath(os.path.join(OBSTACLE_PATH, "obstacle2.dat")), WIDTH, HEIGHT)
+# Load buttoms
+button_set0 = objects.Button(850, 210, SET0_IMG, 1.0)
+button_set1 = objects.Button(850, 280, SET1_IMG, 1.0)
+button_set2 = objects.Button(850, 350, SET2_IMG, 1.0)
+button_set3 = objects.Button(850, 420, SET3_IMG, 1.0)
+button_set4 = objects.Button(850, 490, SET4_IMG, 1.0)
+button_init = objects.Button(1050, 315, INIT_IMG, 1.0)
+button_plan = objects.Button(1050, 385, PLAN_IMG, 1.0)
+all_sprites.add(button_set0)
+all_sprites.add(button_set1)
+all_sprites.add(button_set2)
+all_sprites.add(button_set3)
+all_sprites.add(button_set4)
+all_sprites.add(button_init)
+all_sprites.add(button_plan)
 
-for i in range(len(obstacles_list.verticess)):
-    obstacle = objects.Obstacle( (WIDTH, HEIGHT), (WIDTH/2, HEIGHT/2), OBSTACLE_COLOR, obstacles_list.verticess[i])
-    all_sprites.add(obstacle)
+# initial the planner
+def init():
+    all_sprites.empty()
+    obstacles.empty()
+    robots.empty()
+    all_sprites.add(button_set0)
+    all_sprites.add(button_set1)
+    all_sprites.add(button_set2)
+    all_sprites.add(button_set3)
+    all_sprites.add(button_set4)
+    all_sprites.add(button_init)
+    all_sprites.add(button_plan)
+
+
+# change to set x
+def changeToSet(x):
     
+    init()
+
+    obstacles_list = fileHandler.fileIn()
+    obstacles_list.getObstacle(OBSTACLE_PATH(x))
+
+    for i in range(len(obstacles_list.verticess)):
+        tmp = copy.deepcopy(obstacles_list.verticess[i])
+        obstacle = objects.Obstacle((WIDTH, HEIGHT), (WIDTH/2, HEIGHT/2), OBSTACLE_COLOR, tmp, obstacles_list.init_configs[i], WIDTH, HEIGHT)
+        obstacles.add(obstacle)
+        all_sprites.add(obstacle)
+    
+    robots_list = fileHandler.fileIn()
+    robots_list.getRobot(ROBOT_PATH(x))
+
+    for i in range(len(robots_list.verticess)):
+        tmp = copy.deepcopy(robots_list.verticess[i])
+        robot = objects.Robot((WIDTH, HEIGHT), (WIDTH/2, HEIGHT/2), ROBOT_INIT_COLOR, tmp, robots_list.init_configs[i], WIDTH, HEIGHT)
+        robots.add(robot)
+        all_sprites.add(robot)
+        tmp = copy.deepcopy(robots_list.verticess[i])
+        robot = objects.Robot((WIDTH, HEIGHT), (WIDTH/2, HEIGHT/2), ROBOT_GOAL_COLOR, tmp, robots_list.goal_configs[i], WIDTH, HEIGHT)
+        robots.add(robot)
+        all_sprites.add(robot)
+ 
+
 #robot = objects.Robot((50, 50), (100, 100), ROBOT, [[40.2,40.2], [20,40], [10, 10]])
 #all_sprites.add(robot)
+
 
 # Animation loop
 while running:
@@ -48,11 +121,20 @@ while running:
             running = False
 
     # Update status
-    all_sprites.update()
+
+    if button_set0.update() : changeToSet(0)
+    if button_set1.update() : changeToSet(1)
+    if button_set2.update() : changeToSet(2)
+    if button_set3.update() : changeToSet(3)
+    if button_set4.update() : changeToSet(4)
+    if button_init.update() : init()
+    # if button_plan.update() : plan()       # to do
+
+    # obstacles.update()
 
     # Draw on screen
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    screen.fill(BACKGROUND_COLOR)
+    screen.blit(THEME_IMG, (0, 0))
     all_sprites.draw(screen)
     pygame.display.update()
 
