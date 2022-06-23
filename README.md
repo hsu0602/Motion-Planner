@@ -24,6 +24,6 @@ This is a robotic Motion-Planner system for searching path from initial configur
     pip install pygame 
    ```
    
-2. Download the [exe file](https://github.com/hsu0602/Motion-Planner/blob/master/Motion%20Planner.exe) and install it to whatever you want
+2. Download the [exe file](https://github.com/hsu0602/Motion-Planner/blob/master/Motion%20Planner.exe) and install it to whatever you want (Suggest : create a folder called "Motion Planner")
 
 3. Change to the directory installed, click **run.bat** to run the planner 
